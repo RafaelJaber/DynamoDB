@@ -1,0 +1,13 @@
+{
+  "properties": [
+    {
+      "name": "jaber.aws.access-key",
+      "type": "java.lang.String",
+      "description": "Description for jaber.aws.access-key."
+    },
+    {
+      "name": "jaber.aws.secret-key",
+      "type": "java.lang.String",
+      "description": "Description for jaber.aws.secret-key."
+    }
+  ] }

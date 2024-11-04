@@ -4,6 +4,9 @@ import com.rafaeljaber.dynamodb.application.core.domain.PlayerHistory;
 import com.rafaeljaber.dynamodb.application.ports.in.CreatePlayerHistoryInputPort;
 import com.rafaeljaber.dynamodb.application.ports.out.CreatePlayerHistoryOutputPort;
 
+import java.time.Instant;
+import java.util.UUID;
+
 public class CreatePlayerHistoryUseCase implements CreatePlayerHistoryInputPort {
 
     private final CreatePlayerHistoryOutputPort createPlayerHistoryOutputPort;
@@ -15,6 +18,8 @@ public class CreatePlayerHistoryUseCase implements CreatePlayerHistoryInputPort 
 
     @Override
     public PlayerHistory create(PlayerHistory playerHistory) {
+        playerHistory.setCreatedAt(Instant.now());
+        playerHistory.setGameId(UUID.randomUUID());
         return createPlayerHistoryOutputPort.create(playerHistory);
     }
 }
