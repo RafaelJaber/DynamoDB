@@ -3,11 +3,13 @@ package com.rafaeljaber.dynamodb.adapter.in.controller;
 import com.rafaeljaber.dynamodb.adapter.in.controller.mapper.PlayerHistoryRequestMapper;
 import com.rafaeljaber.dynamodb.adapter.in.controller.mapper.PlayerHistoryResponseMapper;
 import com.rafaeljaber.dynamodb.adapter.in.controller.request.PlayerHistoryRequest;
+import com.rafaeljaber.dynamodb.adapter.in.controller.request.ScoreRequest;
 import com.rafaeljaber.dynamodb.adapter.in.controller.response.PlayerHistoryResponse;
 import com.rafaeljaber.dynamodb.application.core.domain.PlayerHistory;
 import com.rafaeljaber.dynamodb.application.ports.in.CreatePlayerHistoryInputPort;
 import com.rafaeljaber.dynamodb.application.ports.in.FindAllPlayerHistoriesByUsernameInputPort;
 import com.rafaeljaber.dynamodb.application.ports.in.FindPlayerHistoryByGameIdInputPort;
+import com.rafaeljaber.dynamodb.application.ports.in.UpdatePlayerHistoryByGameIdAndUsernameInputPort;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +29,7 @@ public class PlayerHistoryController {
     private final FindAllPlayerHistoriesByUsernameInputPort findAllPlayerHistoriesByUsernameInputPort;
     private final FindPlayerHistoryByGameIdInputPort findPlayerHistoryByGameIdInputPort;
     private final PlayerHistoryRequestMapper playerHistoryRequestMapper;
+    private final UpdatePlayerHistoryByGameIdAndUsernameInputPort updatePlayerHistoryByGameIdAndUsernameInputPort;
     private final PlayerHistoryResponseMapper playerHistoryResponseMapper;
 
 
@@ -61,5 +64,15 @@ public class PlayerHistoryController {
                 .buildAndExpand(created.getUsername(), created.getGameId())
                 .toUri();
         return ResponseEntity.created(location).build();
+    }
+
+    @PutMapping("/{username}/games/{gameId}")
+    public ResponseEntity<Void> updatePlayerHistory(
+            @PathVariable String username,
+            @PathVariable UUID gameId,
+            @Valid @RequestBody ScoreRequest scoreRequest
+    ) {
+        updatePlayerHistoryByGameIdAndUsernameInputPort.update(username, gameId, scoreRequest.getScore());
+        return ResponseEntity.noContent().build();
     }
 }
