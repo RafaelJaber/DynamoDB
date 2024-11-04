@@ -1,19 +1,20 @@
 package com.rafaeljaber.dynamodb.adapter.in.controller;
 
 import com.rafaeljaber.dynamodb.adapter.in.controller.mapper.PlayerHistoryRequestMapper;
+import com.rafaeljaber.dynamodb.adapter.in.controller.mapper.PlayerHistoryResponseMapper;
 import com.rafaeljaber.dynamodb.adapter.in.controller.request.PlayerHistoryRequest;
+import com.rafaeljaber.dynamodb.adapter.in.controller.response.PlayerHistoryResponse;
 import com.rafaeljaber.dynamodb.application.core.domain.PlayerHistory;
 import com.rafaeljaber.dynamodb.application.ports.in.CreatePlayerHistoryInputPort;
+import com.rafaeljaber.dynamodb.application.ports.in.FindAllPlayerHistoriesByUsernameInputPort;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,7 +22,21 @@ import java.net.URI;
 public class PlayerHistoryController {
 
     private final CreatePlayerHistoryInputPort createPlayerHistoryInputPort;
+    private final FindAllPlayerHistoriesByUsernameInputPort findAllPlayerHistoriesByUsernameInputPort;
     private final PlayerHistoryRequestMapper playerHistoryRequestMapper;
+    private final PlayerHistoryResponseMapper playerHistoryResponseMapper;
+
+
+    @GetMapping("/{username}")
+    public ResponseEntity<List<PlayerHistoryResponse>> findAllPlayerHistoriesByUsername(
+            @PathVariable String username
+    ) {
+        List<PlayerHistory> playerHistories = findAllPlayerHistoriesByUsernameInputPort.find(username);
+        List<PlayerHistoryResponse> response = playerHistories.stream()
+                .map(playerHistoryResponseMapper::toPlayerHistoryResponse)
+                .toList();
+        return ResponseEntity.ok(response);
+    }
 
 
     @PostMapping
