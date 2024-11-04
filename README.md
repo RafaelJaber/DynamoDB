@@ -18,7 +18,6 @@
  <a href="#tech">Tecnologias</a> • 
  <a href="#started">Getting Started</a> • 
  <a href="#routes">Endpoints da API</a> •
- <a href="#branches">Branches</a> •
  <a href="#colab">Colaboradores</a> • 
  <a href="#thanks">Agradecimentos</a>
 </p>
