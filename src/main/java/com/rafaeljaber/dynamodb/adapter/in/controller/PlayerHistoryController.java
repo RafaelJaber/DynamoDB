@@ -7,6 +7,7 @@ import com.rafaeljaber.dynamodb.adapter.in.controller.response.PlayerHistoryResp
 import com.rafaeljaber.dynamodb.application.core.domain.PlayerHistory;
 import com.rafaeljaber.dynamodb.application.ports.in.CreatePlayerHistoryInputPort;
 import com.rafaeljaber.dynamodb.application.ports.in.FindAllPlayerHistoriesByUsernameInputPort;
+import com.rafaeljaber.dynamodb.application.ports.in.FindPlayerHistoryByGameIdInputPort;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -23,6 +25,7 @@ public class PlayerHistoryController {
 
     private final CreatePlayerHistoryInputPort createPlayerHistoryInputPort;
     private final FindAllPlayerHistoriesByUsernameInputPort findAllPlayerHistoriesByUsernameInputPort;
+    private final FindPlayerHistoryByGameIdInputPort findPlayerHistoryByGameIdInputPort;
     private final PlayerHistoryRequestMapper playerHistoryRequestMapper;
     private final PlayerHistoryResponseMapper playerHistoryResponseMapper;
 
@@ -35,6 +38,16 @@ public class PlayerHistoryController {
         List<PlayerHistoryResponse> response = playerHistories.stream()
                 .map(playerHistoryResponseMapper::toPlayerHistoryResponse)
                 .toList();
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/{username}/games/{gameId}")
+    public ResponseEntity<PlayerHistoryResponse> findPlayerHistoryByGameId(
+            @PathVariable String username,
+            @PathVariable UUID gameId
+    ) {
+        PlayerHistory playerHistory = findPlayerHistoryByGameIdInputPort.find(username, gameId);
+        PlayerHistoryResponse response = playerHistoryResponseMapper.toPlayerHistoryResponse(playerHistory);
         return ResponseEntity.ok(response);
     }
 
