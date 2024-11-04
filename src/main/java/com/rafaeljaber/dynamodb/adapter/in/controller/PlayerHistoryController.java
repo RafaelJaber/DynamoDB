@@ -6,10 +6,7 @@ import com.rafaeljaber.dynamodb.adapter.in.controller.request.PlayerHistoryReque
 import com.rafaeljaber.dynamodb.adapter.in.controller.request.ScoreRequest;
 import com.rafaeljaber.dynamodb.adapter.in.controller.response.PlayerHistoryResponse;
 import com.rafaeljaber.dynamodb.application.core.domain.PlayerHistory;
-import com.rafaeljaber.dynamodb.application.ports.in.CreatePlayerHistoryInputPort;
-import com.rafaeljaber.dynamodb.application.ports.in.FindAllPlayerHistoriesByUsernameInputPort;
-import com.rafaeljaber.dynamodb.application.ports.in.FindPlayerHistoryByGameIdInputPort;
-import com.rafaeljaber.dynamodb.application.ports.in.UpdatePlayerHistoryByGameIdAndUsernameInputPort;
+import com.rafaeljaber.dynamodb.application.ports.in.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +27,7 @@ public class PlayerHistoryController {
     private final FindPlayerHistoryByGameIdInputPort findPlayerHistoryByGameIdInputPort;
     private final PlayerHistoryRequestMapper playerHistoryRequestMapper;
     private final UpdatePlayerHistoryByGameIdAndUsernameInputPort updatePlayerHistoryByGameIdAndUsernameInputPort;
+    private final DeletePlayerHistoryByGameIdAndUsernameInputPort deletePlayerHistoryByGameIdAndUsernameInputPort;
     private final PlayerHistoryResponseMapper playerHistoryResponseMapper;
 
 
@@ -73,6 +71,15 @@ public class PlayerHistoryController {
             @Valid @RequestBody ScoreRequest scoreRequest
     ) {
         updatePlayerHistoryByGameIdAndUsernameInputPort.update(username, gameId, scoreRequest.getScore());
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/{username}/games/{gameId}")
+    public ResponseEntity<Void> deletePlayerHistory(
+            @PathVariable String username,
+            @PathVariable UUID gameId
+    ) {
+        deletePlayerHistoryByGameIdAndUsernameInputPort.delete(username, gameId);
         return ResponseEntity.noContent().build();
     }
 }
