@@ -1,4 +1,4 @@
-package com.rafaeljaber.dynamodb;
+package com.rafaeljaber.dynamodb.adapter;
 
 import com.rafaeljaber.dynamodb.adapter.out.repository.entity.PlayerHistoryEntity;
 import com.rafaeljaber.dynamodb.adapter.out.repository.mapper.PlayerHistoryEntityMapper;
